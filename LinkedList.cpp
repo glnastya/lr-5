@@ -30,9 +30,22 @@ LinkedList& LinkedList::operator=(LinkedList&& rhs) //перемещающее �
 bool LinkedList::operator ==(const LinkedList& other) const
 {
     // TODO+
-    if (*this == other)
+    if (this->size() == other.size())
+    {
+        Node* left = other.first;
+        Node* right = this->first;
+        while (left)
+        {
+            if (left->value != right->value)
+            {
+                return false;
+            }
+            left = left->next;
+            right = right->next;
+        }
         return true;
-    return false;
+    }
+    else throw std::logic_error("Error: not equal size of object !");
 }
 
 bool LinkedList::operator!=(const LinkedList& other) const
@@ -72,7 +85,6 @@ LinkedList::Node* LinkedList::insert_after(LinkedList::Node* after)
     return nullptr;
 }
 
-
 LinkedList::Node* LinkedList::insert_before(LinkedList::Node* before)
 {
     return nullptr;
@@ -85,11 +97,14 @@ void LinkedList::push_back(const Data& value) //вставка элемента 
     node->value = value;
     node->next = nullptr;
     node->previous = last;
-    last->next = node;
+    if (last != nullptr)
+    {
+        last->next = node;
+    }
     last = node;
     if (first == nullptr)
     {
-        first = last= node;
+        first = last = node;
     }
     ++size_;
 }
@@ -128,8 +143,6 @@ void swap(LinkedList& left, LinkedList& right)
     swap(left.size_, right.size_);
     // HINT: Функция std::swap() меняет значения простых типов
 }
-
-
 LinkedList::LinkedList(): first {nullptr},last {nullptr},size_ {0}
 {
 }
@@ -179,7 +192,7 @@ size_t LinkedList::size() const
     return size_;
 }
 
-Data& LinkedList::value_at(size_t index) //??????
+Data& LinkedList::value_at(size_t index) //
 {
     //TODO+
     LinkedList::Node* current = first;
@@ -207,7 +220,6 @@ void LinkedList::remove_at(size_t index)
     else erase(node); //удаление
 }
 
-
 void LinkedList::insert_before(size_t index, const Data& value)
 {
     // TODO+
@@ -229,7 +241,6 @@ void LinkedList::insert_before(size_t index, const Data& value)
         }
     }
 }
-
 void LinkedList::insert_after(size_t index, const Data& value)
 {
     // TODO+
@@ -251,7 +262,6 @@ void LinkedList::insert_after(size_t index, const Data& value)
         }
     }
 }
-
 LinkedList::Node* LinkedList::node_at(size_t index)//поиск узла (9 слйад)
 {
     // TODO+
@@ -279,12 +289,12 @@ std::ostream& operator<<(std::ostream& output, const LinkedList& xs)//обход
     else
     {
         output<<'[';
-        while (current)
+        while (current != xs.last)
         {
-            output<<current -> value<<", ";;
+            output<<current -> value<<", ";
             current = current->next;
         }
-        output<<']';
+        output<<xs.last->value<<']';
     }
     return output;
 }
